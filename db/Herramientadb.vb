@@ -184,4 +184,24 @@ Public Class Herramientadb
         End Try
     End Function
 
+    Public Function GetAll() As List(Of Herramienta)
+        Return ObtenerTodasHerramientas()
+    End Function
+
+    Public Function GetById(id As Integer) As Herramienta
+        Return ObtenerHerramientaPorID(id)
+    End Function
+
+    Public Function Insert(herramienta As Herramienta) As Boolean
+        Return CrearHerramienta(herramienta)
+    End Function
+
+    Public Function Update(herramienta As Herramienta) As Boolean
+        Return ActualizarHerramienta(herramienta)
+    End Function
+
+    Public Function Delete(id As Integer) As Boolean
+        Return EliminarHerramienta(id)
+    End Function
+
 End Class

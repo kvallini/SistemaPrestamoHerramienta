@@ -2,13 +2,9 @@
 Imports System.Data.SqlClient
 
 Public Class DbHelper
-    Private connectionString As String
+    Private Shared ReadOnly connectionString As String = ConfigurationManager.ConnectionStrings("HerramientasDB").ConnectionString
 
-    Public Sub New()
-        connectionString = ConfigurationManager.ConnectionStrings("HerramientasDB").ConnectionString
-    End Sub
-
-    Public Function ExecuteQuery(query As String, parameters As List(Of SqlParameter)) As DataTable
+    Public Shared Function ExecuteQuery(query As String, Optional parameters As List(Of SqlParameter) = Nothing) As DataTable
         Dim dataTable As New DataTable()
 
         Using connection As New SqlConnection(connectionString)
@@ -29,7 +25,7 @@ Public Class DbHelper
         Return dataTable
     End Function
 
-    Public Function ExecuteNonQuery(query As String, parameters As List(Of SqlParameter)) As Integer
+    Public Shared Function ExecuteNonQuery(query As String, Optional parameters As List(Of SqlParameter) = Nothing) As Integer
         Dim rowsAffected As Integer = 0
 
         Using connection As New SqlConnection(connectionString)
@@ -48,7 +44,7 @@ Public Class DbHelper
         Return rowsAffected
     End Function
 
-    Public Function ExecuteScalar(query As String, parameters As List(Of SqlParameter)) As Object
+    Public Shared Function ExecuteScalar(query As String, Optional parameters As List(Of SqlParameter) = Nothing) As Object
         Dim result As Object = Nothing
 
         Using connection As New SqlConnection(connectionString)

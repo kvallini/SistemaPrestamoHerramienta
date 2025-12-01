@@ -92,6 +92,8 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         .card {
             transition: transform 0.2s, box-shadow 0.2s;

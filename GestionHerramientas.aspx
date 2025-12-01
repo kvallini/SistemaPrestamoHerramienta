@@ -132,6 +132,8 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script type="text/javascript">
         function abrirModal() {
             var modal = new bootstrap.Modal(document.getElementById('modalHerramienta'));
