@@ -1,4 +1,8 @@
-﻿Public Class Site
+﻿Imports System.Web.UI
+Imports System.Web.UI.WebControls
+Imports System.Web.UI.HtmlControls
+
+Public Class Site
     Inherits System.Web.UI.MasterPage
 
     Protected litUserName As Literal
@@ -6,7 +10,7 @@
     Protected loginMenu As HtmlGenericControl
     Protected lnkCerrarSesion As LinkButton
 
-    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         If Not IsPostBack Then
             ConfigurarMenu()
         End If
@@ -16,32 +20,33 @@
         Dim estaAutenticado As Boolean = Context.User.Identity.IsAuthenticated
 
         If estaAutenticado Then
-            ' Usuario autenticado
             userMenu.Visible = True
             loginMenu.Visible = False
 
-            ' Mostrar nombre de usuario
             If Session("NombreUsuario") IsNot Nothing Then
                 litUserName.Text = Session("NombreUsuario").ToString()
             Else
                 litUserName.Text = Context.User.Identity.Name
             End If
         Else
-            ' Usuario no autenticado
             userMenu.Visible = False
             loginMenu.Visible = True
         End If
     End Sub
 
     Protected Sub lnkCerrarSesion_Click(sender As Object, e As EventArgs)
-        ' Limpiar sesión
         Session.Clear()
         Session.Abandon()
 
-        ' Cerrar autenticación
         System.Web.Security.FormsAuthentication.SignOut()
 
-        ' Redirigir al login
         Response.Redirect("~/Login.aspx")
     End Sub
+
+    'SweetAlert en todo el proyecto
+    Public Sub MostrarAlerta(titulo As String, mensaje As String, tipo As String)
+        Dim script As String = $"showAlert('{titulo}', '{mensaje}', '{tipo}');"
+        ScriptManager.RegisterStartupScript(Me, Me.GetType(), "SwalMensajeGlobal", script, True)
+    End Sub
+
 End Class
