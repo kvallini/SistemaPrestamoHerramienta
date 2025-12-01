@@ -43,4 +43,60 @@ Public Class Prestamodb
             Return New DataTable()
         End Try
     End Function
+
+    Public Function ObtenerSolicitudesPendientes() As DataTable
+        Try
+            Dim sql As String = "SELECT p.PrestamoID, u.Nombre as Solicitante, h.Nombre as Herramienta, 
+                                    c.Nombre as Categoria, p.FechaSolicitud, p.ComentariosSolicitud,
+                                    p.FechaDevolucionPrevista
+                             FROM Prestamos p
+                             INNER JOIN Usuarios u ON p.UsuarioID = u.UsuarioID
+                             INNER JOIN Herramientas h ON p.HerramientaID = h.HerramientaID
+                             LEFT JOIN Categorias c ON h.CategoriaID = c.CategoriaID
+                             WHERE p.Estado = 'Pendiente'
+                             ORDER BY p.FechaSolicitud ASC"
+
+            Return dbHelper.ExecuteQuery(sql, Nothing)
+
+        Catch ex As Exception
+            Return New DataTable()
+        End Try
+    End Function
+
+    Public Function AprobarSolicitud(prestamoID As Integer) As Boolean
+        Try
+            Dim sql As String = "UPDATE Prestamos SET Estado = 'Aprobado', FechaAprobacion = GETDATE() 
+                             WHERE PrestamoID = @PrestamoID"
+
+            Dim parametros As New List(Of SqlParameter) From {
+                New SqlParameter("@PrestamoID", prestamoID)
+            }
+
+            dbHelper.ExecuteNonQuery(sql, parametros)
+            Return True
+
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
+
+    Public Function RechazarSolicitud(prestamoID As Integer, motivo As String) As Boolean
+        Try
+            Dim sql As String = "UPDATE Prestamos SET Estado = 'Rechazado', MotivoRechazo = @Motivo, 
+                             FechaAprobacion = GETDATE() 
+                             WHERE PrestamoID = @PrestamoID"
+
+            Dim parametros As New List(Of SqlParameter) From {
+                New SqlParameter("@PrestamoID", prestamoID),
+                New SqlParameter("@Motivo", motivo)
+            }
+
+            dbHelper.ExecuteNonQuery(sql, parametros)
+            Return True
+
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
+
 End Class

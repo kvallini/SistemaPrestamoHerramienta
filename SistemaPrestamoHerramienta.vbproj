@@ -125,6 +125,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
+    <Content Include="GestionHerramientas.aspx" />
+    <Content Include="HomeAdmin.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
@@ -143,6 +145,8 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="GestionSolicitudes.aspx" />
+    <Content Include="HomeJefeBodega.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -219,6 +223,20 @@
       <DependentUpon>About.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
+    <Compile Include="GestionHerramientas.aspx.designer.vb">
+      <DependentUpon>GestionHerramientas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="GestionHerramientas.aspx.vb">
+      <DependentUpon>GestionHerramientas.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="HomeAdmin.aspx.designer.vb">
+      <DependentUpon>HomeAdmin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HomeAdmin.aspx.vb">
+      <DependentUpon>HomeAdmin.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
     <Compile Include="Contact.aspx.designer.vb">
       <DependentUpon>Contact.aspx</DependentUpon>
     </Compile>
@@ -230,6 +248,20 @@
     <Compile Include="db\dbLogin.vb" />
     <Compile Include="db\Herramientadb.vb" />
     <Compile Include="db\Prestamodb.vb" />
+    <Compile Include="GestionSolicitudes.aspx.designer.vb">
+      <DependentUpon>GestionSolicitudes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="GestionSolicitudes.aspx.vb">
+      <DependentUpon>GestionSolicitudes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HomeJefeBodega.aspx.designer.vb">
+      <DependentUpon>HomeJefeBodega.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HomeJefeBodega.aspx.vb">
+      <DependentUpon>HomeJefeBodega.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Default.aspx.vb">
       <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>Default.aspx</DependentUpon>

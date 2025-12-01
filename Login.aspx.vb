@@ -3,7 +3,7 @@
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         If Not IsPostBack Then
-            ' Si ya está autenticado, redirigir al home
+            ' Redirigir al home
             If User.Identity.IsAuthenticated Then
                 Response.Redirect("HomeEmpleado.aspx")
             End If
@@ -34,11 +34,16 @@
                 Session("RolUsuario") = usuarioAutenticado.Rol
                 Session("Activo") = usuarioAutenticado.Activo
 
-                ' Configurar autenticación de forms
+                ' Configurar autenticación
                 System.Web.Security.FormsAuthentication.SetAuthCookie(usuarioAutenticado.Nombre, False)
-
-                ' Redirigir según el rol (por ahora todos van a HomeEmpleado)
-                Response.Redirect("HomeEmpleado.aspx")
+                Dim rol As String = usuarioAutenticado.Rol.ToLower()
+                If rol.Contains("jefe") Or rol.Contains("bodega") Then
+                    Response.Redirect("HomeJefeBodega.aspx")
+                ElseIf rol.Contains("admin") Then
+                    Response.Redirect("HomeAdmin.aspx")
+                Else
+                    Response.Redirect("HomeEmpleado.aspx")
+                End If
             Else
                 MostrarError("Error al obtener información del usuario")
             End If
