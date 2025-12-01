@@ -5,15 +5,15 @@ Imports System.Web.UI.HtmlControls
 Public Class Site
     Inherits System.Web.UI.MasterPage
 
-    Protected litUserName As Literal
-    Protected userMenu As HtmlGenericControl
-    Protected loginMenu As HtmlGenericControl
-    Protected lnkCerrarSesion As LinkButton
+    'Protected litUserName As Literal
+    'Protected userMenu As HtmlGenericControl
+    'Protected loginMenu As HtmlGenericControl
+    'Protected lnkCerrarSesion As LinkButton
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
-        If Not IsPostBack Then
-            ConfigurarMenu()
-        End If
+        'If Not IsPostBack Then
+        ConfigurarMenu()
+        'End If
     End Sub
 
     Private Sub ConfigurarMenu()
