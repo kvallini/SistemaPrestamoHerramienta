@@ -2,6 +2,7 @@
     Inherits System.Web.UI.Page
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+
         If Not IsPostBack Then
             If Session("NombreUsuario") Is Nothing Then
                 Response.Redirect("Login.aspx")
@@ -20,7 +21,7 @@
         End If
     End Sub
 
-    ' ✅ Función pública para que el HTML sepa si es Admin
+    ' Función si es Admin
     Public Function EsAdmin() As Boolean
         If Session("RolUsuario") IsNot Nothing Then
             Return Session("RolUsuario").ToString().ToLower().Contains("admin")
@@ -78,25 +79,25 @@
     Private Sub EliminarHerramienta(herramientaID As Integer)
         Dim herramientaDB As New Herramientadb()
         If herramientaDB.EliminarHerramienta(herramientaID) Then
-            ClientScript.RegisterStartupScript(Me.GetType(), "success", "alert('Herramienta eliminada correctamente');", True)
+            CType(Me.Master, Site).MostrarAlerta("¡Correcto!", "Herramienta eliminada correctamente", "success")
             CargarHerramientas()
         Else
-            ClientScript.RegisterStartupScript(Me.GetType(), "error", "alert('No se puede eliminar la herramienta. Puede tener préstamos asociados.');", True)
+            CType(Me.Master, Site).MostrarAlerta("Error", "No se puede eliminar la herramienta. Puede tener préstamos asociados.", "error")
         End If
     End Sub
 
     Protected Sub btnGuardar_Click(sender As Object, e As EventArgs)
         If ValidarFormulario() Then
             Dim herramienta As New Herramienta() With {
-                .HerramientaID = Convert.ToInt32(hdnHerramientaID.Value),
-                .Codigo = txtCodigo.Text.Trim(),
-                .Nombre = txtNombre.Text.Trim(),
-                .Descripcion = txtDescripcion.Text.Trim(),
-                .Estado = ddlEstado.SelectedValue,
-                .Ubicacion = txtUbicacion.Text.Trim(),
-                .Disponible = chkDisponible.Checked,
-                .CategoriaID = Nothing ' Por ahora null, luego con categorías
-            }
+            .HerramientaID = Convert.ToInt32(hdnHerramientaID.Value),
+            .Codigo = txtCodigo.Text.Trim(),
+            .Nombre = txtNombre.Text.Trim(),
+            .Descripcion = txtDescripcion.Text.Trim(),
+            .Estado = ddlEstado.SelectedValue,
+            .Ubicacion = txtUbicacion.Text.Trim(),
+            .Disponible = chkDisponible.Checked,
+            .CategoriaID = Nothing
+        }
 
             Dim herramientaDB As New Herramientadb()
             Dim resultado As Boolean = False
@@ -109,22 +110,22 @@
 
             If resultado Then
                 ClientScript.RegisterStartupScript(Me.GetType(), "cerrarModal", "$('#modalHerramienta').modal('hide');", True)
-                ClientScript.RegisterStartupScript(Me.GetType(), "success", "alert('Herramienta guardada correctamente');", True)
+                CType(Me.Master, Site).MostrarAlerta("¡Éxito!", "Herramienta guardada correctamente", "success")
                 CargarHerramientas()
             Else
-                ClientScript.RegisterStartupScript(Me.GetType(), "error", "alert('Error al guardar la herramienta');", True)
+                CType(Me.Master, Site).MostrarAlerta("Error", "Error al guardar la herramienta", "error")
             End If
         End If
     End Sub
 
     Private Function ValidarFormulario() As Boolean
         If String.IsNullOrEmpty(txtCodigo.Text.Trim()) Then
-            ClientScript.RegisterStartupScript(Me.GetType(), "error", "alert('El código es obligatorio');", True)
+            CType(Me.Master, Site).MostrarAlerta("Error", "El código es obligatorio", "error")
             Return False
         End If
 
         If String.IsNullOrEmpty(txtNombre.Text.Trim()) Then
-            ClientScript.RegisterStartupScript(Me.GetType(), "error", "alert('El nombre es obligatorio');", True)
+            CType(Me.Master, Site).MostrarAlerta("Error", "El nombre es obligatorio", "error")
             Return False
         End If
 

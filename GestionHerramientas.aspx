@@ -132,12 +132,32 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script type="text/javascript">
         function abrirModal() {
             var modal = new bootstrap.Modal(document.getElementById('modalHerramienta'));
             modal.show();
         }
+
+        function confirmarEliminar(nombre, id) {
+            Swal.fire({
+                title: '¿Eliminar herramienta?',
+                html: '¿Está seguro de eliminar <b>' + nombre + '</b>?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Hacer postback para ejecutar eliminación
+                    __doPostBack('EliminarHerramienta', id);
+                }
+            });
+            return false; // Detener el postback inmediato
+        }
+
     </script>
+
+
 </asp:Content>
