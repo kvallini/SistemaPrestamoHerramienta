@@ -16,8 +16,9 @@
                 Return
             End If
 
-            CargarHerramientas()
             CargarCategorias()
+            CargarHerramientas()
+
         End If
     End Sub
 
@@ -36,9 +37,16 @@
     End Sub
 
     Private Sub CargarCategorias()
-        ' Necesitaremos crear Categoriadb.vb después
-        ' Por ahora dejamos vacío, lo implementaremos luego
-        ddlCategoria.Items.Add(New ListItem("Sin categoría", ""))
+        Dim categoriaDB As New Categoriadb()
+        Dim categorias As DataTable = categoriaDB.ObtenerTodasCategorias()
+
+        ddlCategoria.Items.Clear()
+        ddlCategoria.Items.Add(New ListItem("Seleccionar categoría", ""))
+        ddlCategoria.Items.Add(New ListItem("Sin categoría", "0"))
+
+        For Each row As DataRow In categorias.Rows
+            ddlCategoria.Items.Add(New ListItem(row("Nombre").ToString(), row("CategoriaID").ToString()))
+        Next
     End Sub
 
     Protected Sub btnNuevaHerramienta_Click(sender As Object, e As EventArgs)
@@ -59,21 +67,61 @@
     End Sub
 
     Private Sub EditarHerramienta(herramientaID As Integer)
-        Dim herramientaDB As New Herramientadb()
-        Dim herramienta As Herramienta = herramientaDB.ObtenerHerramientaPorID(herramientaID)
+        Try
+            System.Diagnostics.Debug.WriteLine($"EDITAR iniciado - HerramientaID: {herramientaID}")
 
-        If herramienta IsNot Nothing Then
-            hdnHerramientaID.Value = herramientaID.ToString()
-            txtCodigo.Text = herramienta.Codigo
-            txtNombre.Text = herramienta.Nombre
-            txtDescripcion.Text = herramienta.Descripcion
-            ddlEstado.SelectedValue = herramienta.Estado
-            txtUbicacion.Text = herramienta.Ubicacion
-            chkDisponible.Checked = herramienta.Disponible
+            Dim herramientaDB As New Herramientadb()
+            Dim herramienta As Herramienta = herramientaDB.ObtenerHerramientaPorID(herramientaID)
 
-            litModalTitulo.Text = "Editar Herramienta"
-            ClientScript.RegisterStartupScript(Me.GetType(), "abrirModal", "abrirModal();", True)
-        End If
+            If herramienta IsNot Nothing Then
+                System.Diagnostics.Debug.WriteLine($"Herramienta encontrada: {herramienta.Nombre}")
+
+                hdnHerramientaID.Value = herramientaID.ToString()
+                txtCodigo.Text = herramienta.Codigo
+                txtNombre.Text = herramienta.Nombre
+                txtDescripcion.Text = herramienta.Descripcion
+                ddlEstado.SelectedValue = herramienta.Estado
+                txtUbicacion.Text = herramienta.Ubicacion
+                chkDisponible.Checked = herramienta.Disponible
+
+                ' DEBUG: Ver categoría
+                System.Diagnostics.Debug.WriteLine($"CategoriaID: {If(herramienta.CategoriaID Is Nothing, "NULL", herramienta.CategoriaID)}")
+
+                If herramienta.CategoriaID IsNot Nothing AndAlso herramienta.CategoriaID > 0 Then
+                    Dim item As ListItem = ddlCategoria.Items.FindByValue(herramienta.CategoriaID.ToString())
+                    If item IsNot Nothing Then
+                        ddlCategoria.SelectedValue = herramienta.CategoriaID.ToString()
+                        System.Diagnostics.Debug.WriteLine($"Categoría seleccionada: {item.Text}")
+                    Else
+                        ddlCategoria.SelectedIndex = 0
+                        System.Diagnostics.Debug.WriteLine($"Categoría NO encontrada en lista")
+                    End If
+                Else
+                    ddlCategoria.SelectedValue = "0"
+                    System.Diagnostics.Debug.WriteLine($"Categoría NULL o 0, seleccionando '0'")
+                End If
+
+                litModalTitulo.Text = "Editar Herramienta"
+
+                ' DEBUG: Verificar script
+                System.Diagnostics.Debug.WriteLine("Intentando abrir modal...")
+
+                ' Prueba diferentes formas:
+                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "abrirModal",
+                "console.log('Script RegisterStartupScript ejecutado'); 
+                 setTimeout(function() { 
+                     console.log('Abriendo modal...'); 
+                     $('#modalHerramienta').modal('show'); 
+                 }, 100);", True)
+
+            Else
+                System.Diagnostics.Debug.WriteLine("Herramienta NO encontrada")
+            End If
+
+        Catch ex As Exception
+            System.Diagnostics.Debug.WriteLine($"ERROR en EditarHerramienta: {ex.Message}")
+            System.Diagnostics.Debug.WriteLine($"Stack: {ex.StackTrace}")
+        End Try
     End Sub
 
     Private Sub EliminarHerramienta(herramientaID As Integer)
@@ -88,6 +136,13 @@
 
     Protected Sub btnGuardar_Click(sender As Object, e As EventArgs)
         If ValidarFormulario() Then
+            Dim categoriaID As Integer? = Nothing
+
+            ' ✅ CORREGIDO: Solo asignar si NO es "0" o vacío
+            If Not String.IsNullOrEmpty(ddlCategoria.SelectedValue) AndAlso ddlCategoria.SelectedValue <> "0" Then
+                categoriaID = Convert.ToInt32(ddlCategoria.SelectedValue)
+            End If
+
             Dim herramienta As New Herramienta() With {
             .HerramientaID = Convert.ToInt32(hdnHerramientaID.Value),
             .Codigo = txtCodigo.Text.Trim(),
@@ -96,7 +151,7 @@
             .Estado = ddlEstado.SelectedValue,
             .Ubicacion = txtUbicacion.Text.Trim(),
             .Disponible = chkDisponible.Checked,
-            .CategoriaID = Nothing
+            .CategoriaID = categoriaID ' ✅ AHORA SÍ CON CATEGORÍA
         }
 
             Dim herramientaDB As New Herramientadb()
@@ -177,5 +232,7 @@
         txtUbicacion.Text = ""
         ddlEstado.SelectedValue = "Disponible"
         chkDisponible.Checked = True
+        ddlCategoria.SelectedValue = "0"
+
     End Sub
 End Class

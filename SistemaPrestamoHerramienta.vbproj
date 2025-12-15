@@ -125,6 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
+    <Content Include="GestionCategorias.aspx" />
     <Content Include="GestionHerramientas.aspx" />
     <Content Include="HomeAdmin.aspx" />
     <Content Include="Contact.aspx" />
@@ -222,6 +223,14 @@
     </Compile>
     <Compile Include="About.aspx.vb">
       <DependentUpon>About.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="db\UsuarioDB.vb" />
+    <Compile Include="GestionCategorias.aspx.designer.vb">
+      <DependentUpon>GestionCategorias.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="GestionCategorias.aspx.vb">
+      <DependentUpon>GestionCategorias.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="GestionHerramientas.aspx.designer.vb">

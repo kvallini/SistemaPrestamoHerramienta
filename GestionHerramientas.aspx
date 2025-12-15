@@ -43,11 +43,11 @@
                     CommandName="Editar" 
                     CommandArgument='<%# Eval("HerramientaID") %>' />
                 <asp:Button ID="btnEliminar" runat="server" Text="Eliminar" 
-                    CssClass="btn btn-danger btn-sm" 
-                    CommandName="Eliminar" 
-                    CommandArgument='<%# Eval("HerramientaID") %>'
-                    Visible='<%# EsAdmin() %>' 
-                    OnClientClick="return confirm('¿Está seguro de eliminar esta herramienta?');" />
+                CssClass="btn btn-danger btn-sm" 
+                CommandName="Eliminar" 
+                CommandArgument='<%# Eval("HerramientaID") %>'
+                Visible='<%# Session("RolUsuario") IsNot Nothing AndAlso Session("RolUsuario").ToString().ToLower().Contains("admin") %>' 
+                OnClientClick="return confirm('¿Está seguro de eliminar esta herramienta?');" />
             </ItemTemplate>
         </asp:TemplateField>
     </Columns>
