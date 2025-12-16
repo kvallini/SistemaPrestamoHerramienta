@@ -36,7 +36,7 @@
                     </div>
                 </div>
 
-                <asp:GridView ID="gvPrestamos" runat="server" AutoGenerateColumns="False" CssClass="table table-bordered table-striped" DataKeyNames="PrestamoID" EmptyDataText="No hay préstamos">
+                <asp:GridView ID="gvPrestamos" runat="server" AutoGenerateColumns="False" CssClass="table table-bordered table-striped" DataKeyNames="PrestamoID" OnRowCommand="gvPrestamos_RowCommand" EmptyDataText="No hay préstamos">
                     <Columns>
                         <asp:BoundField DataField="NombreHerramienta" HeaderText="Herramienta" />
                         <asp:BoundField DataField="NombreUsuario" HeaderText="Usuario" />

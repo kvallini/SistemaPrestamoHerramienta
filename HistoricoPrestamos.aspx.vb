@@ -16,16 +16,23 @@ Public Class HistoricoPrestamos
 
     Private Sub CargarPrestamos()
         Dim dt As DataTable = New Prestamodb().GetAll()
-        ' Aplicar filtros
-        If ddlFiltroUsuario.SelectedValue <> "" Then
-            dt = dt.AsEnumerable().Where(Function(r) r("UsuarioID").ToString() = ddlFiltroUsuario.SelectedValue).CopyToDataTable()
+
+        ' Aplicar filtros solo si hay datos
+        If dt.Rows.Count > 0 Then
+            If ddlFiltroUsuario.SelectedValue <> "" Then
+                Dim filtered = dt.AsEnumerable().Where(Function(r) r("UsuarioID").ToString() = ddlFiltroUsuario.SelectedValue)
+                dt = If(filtered.Any(), filtered.CopyToDataTable(), dt.Clone())
+            End If
+            If Not String.IsNullOrEmpty(txtFiltroFecha.Text) Then
+                Dim filtered = dt.AsEnumerable().Where(Function(r) CDate(r("FechaPrestamo")).Date = CDate(txtFiltroFecha.Text).Date)
+                dt = If(filtered.Any(), filtered.CopyToDataTable(), dt.Clone())
+            End If
+            If ddlFiltroEstado.SelectedValue <> "" Then
+                Dim filtered = dt.AsEnumerable().Where(Function(r) r("Estado").ToString() = ddlFiltroEstado.SelectedValue)
+                dt = If(filtered.Any(), filtered.CopyToDataTable(), dt.Clone())
+            End If
         End If
-        If Not String.IsNullOrEmpty(txtFiltroFecha.Text) Then
-            dt = dt.AsEnumerable().Where(Function(r) CDate(r("FechaPrestamo")).Date = CDate(txtFiltroFecha.Text).Date).CopyToDataTable()
-        End If
-        If ddlFiltroEstado.SelectedValue <> "" Then
-            dt = dt.AsEnumerable().Where(Function(r) r("Estado").ToString() = ddlFiltroEstado.SelectedValue).CopyToDataTable()
-        End If
+
         gvPrestamos.DataSource = dt
         gvPrestamos.DataBind()
     End Sub

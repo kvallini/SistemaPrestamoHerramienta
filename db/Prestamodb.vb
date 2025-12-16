@@ -46,15 +46,22 @@ Public Class Prestamodb
 
     Public Function ObtenerSolicitudesPendientes() As DataTable
         Try
-            Dim sql As String = "SELECT p.PrestamoID, u.Nombre as Solicitante, h.Nombre as Herramienta, 
-                                    c.Nombre as Categoria, p.FechaSolicitud, p.ComentariosSolicitud,
-                                    p.FechaDevolucionPrevista
-                             FROM Prestamos p
-                             INNER JOIN Usuarios u ON p.UsuarioID = u.UsuarioID
-                             INNER JOIN Herramientas h ON p.HerramientaID = h.HerramientaID
-                             LEFT JOIN Categorias c ON h.CategoriaID = c.CategoriaID
-                             WHERE p.Estado = 'Pendiente'
-                             ORDER BY p.FechaSolicitud ASC"
+            Dim sql As String =
+                                 "SELECT 
+                                    p.PrestamoID,
+                                    ISNULL(u.Nombre, '[Usuario no disponible]') AS Solicitante,
+                                    ISNULL(h.Nombre, '[Herramienta no disponible]') AS Herramienta,
+                                    c.Nombre AS Categoria,
+                                    p.FechaSolicitud,
+                                    p.ComentariosSolicitud,
+                                    p.FechaDevolucionPrevista,
+                                    p.Estado
+                                FROM Prestamos p
+                                LEFT JOIN Usuarios u ON p.UsuarioID = u.UsuarioID
+                                LEFT JOIN Herramientas h ON p.HerramientaID = h.HerramientaID
+                                LEFT JOIN Categorias c ON h.CategoriaID = c.CategoriaID
+                                WHERE p.Estado = 'Pendiente'
+                                ORDER BY p.FechaSolicitud ASC"
 
             Return dbHelper.ExecuteQuery(sql, Nothing)
 

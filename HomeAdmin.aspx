@@ -100,6 +100,30 @@
                 </div>
             </div>
         </div>
+        <!-- Información del Usuario -->
+<div class="row mt-5">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user-circle me-2"></i>Información de la Sesión
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <p><strong>Usuario:</strong> <%= If(Session("NombreUsuario"), "No disponible") %></p>
+                        <p><strong>Email:</strong> <%= If(Session("EmailUsuario"), "No disponible") %></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Rol:</strong> <%= If(Session("RolUsuario"), "No disponible") %></p>
+                        <p><strong>ID Usuario:</strong> <%= If(Session("UsuarioID"), "No disponible") %></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     </div>
 
 
