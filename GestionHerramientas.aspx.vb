@@ -1,238 +1,123 @@
-﻿Public Class GestionHerramientas
+﻿Imports System.Data
+
+Public Class GestionHerramientas
     Inherits System.Web.UI.Page
 
-    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+    Public Function EsAdmin() As Boolean
+        Return Session("RolUsuario") IsNot Nothing AndAlso
+               Session("RolUsuario").ToString().ToLower().Contains("admin")
+    End Function
 
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         If Not IsPostBack Then
             If Session("NombreUsuario") Is Nothing Then
                 Response.Redirect("Login.aspx")
                 Return
             End If
-
-            ' Verificar que sea Admin o JefeBodega
-            Dim rol As String = Session("RolUsuario").ToString().ToLower()
-            If Not rol.Contains("admin") AndAlso Not rol.Contains("jefe") Then
-                Response.Redirect("Login.aspx")
-                Return
-            End If
-
             CargarCategorias()
             CargarHerramientas()
-
         End If
     End Sub
 
-    ' Función si es Admin
-    Public Function EsAdmin() As Boolean
-        If Session("RolUsuario") IsNot Nothing Then
-            Return Session("RolUsuario").ToString().ToLower().Contains("admin")
-        End If
-        Return False
-    End Function
-
     Private Sub CargarHerramientas()
-        Dim herramientaDB As New Herramientadb()
-        gvHerramientas.DataSource = herramientaDB.ObtenerTodasHerramientas()
+        gvHerramientas.DataSource = New Herramientadb().ObtenerTodasHerramientas()
         gvHerramientas.DataBind()
     End Sub
 
     Private Sub CargarCategorias()
-        Dim categoriaDB As New Categoriadb()
-        Dim categorias As DataTable = categoriaDB.ObtenerTodasCategorias()
-
+        Dim dt As DataTable = New Categoriadb().ObtenerTodasCategorias()
         ddlCategoria.Items.Clear()
-        ddlCategoria.Items.Add(New ListItem("Seleccionar categoría", ""))
         ddlCategoria.Items.Add(New ListItem("Sin categoría", "0"))
 
-        For Each row As DataRow In categorias.Rows
-            ddlCategoria.Items.Add(New ListItem(row("Nombre").ToString(), row("CategoriaID").ToString()))
+        For Each r As DataRow In dt.Rows
+            ddlCategoria.Items.Add(New ListItem(r("Nombre").ToString(), r("CategoriaID").ToString()))
         Next
     End Sub
 
-    Protected Sub btnNuevaHerramienta_Click(sender As Object, e As EventArgs)
+    Protected Sub btnNuevaHerramienta_Click(sender As Object, e As EventArgs) Handles btnNuevaHerramienta.Click
         LimpiarFormulario()
-        litModalTitulo.Text = "Nueva Herramienta"
         hdnHerramientaID.Value = "0"
-        ClientScript.RegisterStartupScript(Me.GetType(), "abrirModal", "abrirModal();", True)
+        litModalTitulo.Text = "Nueva Herramienta"
+
+        ScriptManager.RegisterStartupScript(Me, Me.GetType(), "abrir", "abrirModal();", True)
     End Sub
 
     Protected Sub gvHerramientas_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If e.CommandName = "Editar" Then
-            Dim herramientaID As Integer = Convert.ToInt32(e.CommandArgument)
-            EditarHerramienta(herramientaID)
+            EditarHerramienta(CInt(e.CommandArgument))
         ElseIf e.CommandName = "Eliminar" Then
-            Dim herramientaID As Integer = Convert.ToInt32(e.CommandArgument)
-            EliminarHerramienta(herramientaID)
+            EliminarHerramienta(CInt(e.CommandArgument))
         End If
     End Sub
 
-    Private Sub EditarHerramienta(herramientaID As Integer)
-        Try
-            System.Diagnostics.Debug.WriteLine($"EDITAR iniciado - HerramientaID: {herramientaID}")
+    Private Sub EditarHerramienta(id As Integer)
+        Dim h = New Herramientadb().ObtenerHerramientaPorID(id)
+        If h Is Nothing Then Return
 
-            Dim herramientaDB As New Herramientadb()
-            Dim herramienta As Herramienta = herramientaDB.ObtenerHerramientaPorID(herramientaID)
+        hdnHerramientaID.Value = id
+        txtCodigo.Text = h.Codigo
+        txtNombre.Text = h.Nombre
+        txtDescripcion.Text = h.Descripcion
+        ddlEstado.SelectedValue = h.Estado
+        chkDisponible.Checked = h.Disponible
+        ddlCategoria.SelectedValue = If(h.CategoriaID.HasValue, h.CategoriaID.ToString(), "0")
+        txtUbicacion.Text = h.Ubicacion  ' Ya corregido
 
-            If herramienta IsNot Nothing Then
-                System.Diagnostics.Debug.WriteLine($"Herramienta encontrada: {herramienta.Nombre}")
-
-                hdnHerramientaID.Value = herramientaID.ToString()
-                txtCodigo.Text = herramienta.Codigo
-                txtNombre.Text = herramienta.Nombre
-                txtDescripcion.Text = herramienta.Descripcion
-                ddlEstado.SelectedValue = herramienta.Estado
-                txtUbicacion.Text = herramienta.Ubicacion
-                chkDisponible.Checked = herramienta.Disponible
-
-                ' DEBUG: Ver categoría
-                System.Diagnostics.Debug.WriteLine($"CategoriaID: {If(herramienta.CategoriaID Is Nothing, "NULL", herramienta.CategoriaID)}")
-
-                If herramienta.CategoriaID IsNot Nothing AndAlso herramienta.CategoriaID > 0 Then
-                    Dim item As ListItem = ddlCategoria.Items.FindByValue(herramienta.CategoriaID.ToString())
-                    If item IsNot Nothing Then
-                        ddlCategoria.SelectedValue = herramienta.CategoriaID.ToString()
-                        System.Diagnostics.Debug.WriteLine($"Categoría seleccionada: {item.Text}")
-                    Else
-                        ddlCategoria.SelectedIndex = 0
-                        System.Diagnostics.Debug.WriteLine($"Categoría NO encontrada en lista")
-                    End If
-                Else
-                    ddlCategoria.SelectedValue = "0"
-                    System.Diagnostics.Debug.WriteLine($"Categoría NULL o 0, seleccionando '0'")
-                End If
-
-                litModalTitulo.Text = "Editar Herramienta"
-
-                ' DEBUG: Verificar script
-                System.Diagnostics.Debug.WriteLine("Intentando abrir modal...")
-
-                ' Prueba diferentes formas:
-                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "abrirModal",
-                "console.log('Script RegisterStartupScript ejecutado'); 
-                 setTimeout(function() { 
-                     console.log('Abriendo modal...'); 
-                     $('#modalHerramienta').modal('show'); 
-                 }, 100);", True)
-
-            Else
-                System.Diagnostics.Debug.WriteLine("Herramienta NO encontrada")
-            End If
-
-        Catch ex As Exception
-            System.Diagnostics.Debug.WriteLine($"ERROR en EditarHerramienta: {ex.Message}")
-            System.Diagnostics.Debug.WriteLine($"Stack: {ex.StackTrace}")
-        End Try
+        litModalTitulo.Text = "Editar Herramienta"
+        ScriptManager.RegisterStartupScript(Me, Me.GetType(), "abrir", "abrirModal();", True)
     End Sub
 
-    Private Sub EliminarHerramienta(herramientaID As Integer)
-        Dim herramientaDB As New Herramientadb()
-        If herramientaDB.EliminarHerramienta(herramientaID) Then
-            CType(Me.Master, Site).MostrarAlerta("¡Correcto!", "Herramienta eliminada correctamente", "success")
+    Private Sub EliminarHerramienta(id As Integer)
+        If Not EsAdmin() Then Return
+
+        If New Herramientadb().EliminarHerramienta(id) Then
+            ' CAMBIO: Usar Swal.fire() directo en lugar de MostrarAlerta
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "ok", "Swal.fire('Correcto','Herramienta eliminada','success');", True)
             CargarHerramientas()
         Else
-            CType(Me.Master, Site).MostrarAlerta("Error", "No se puede eliminar la herramienta. Puede tener préstamos asociados.", "error")
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "err", "Swal.fire('Error','No se pudo eliminar','error');", True)
         End If
     End Sub
 
-    Protected Sub btnGuardar_Click(sender As Object, e As EventArgs)
-        If ValidarFormulario() Then
-            Dim categoriaID As Integer? = Nothing
+    Protected Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
+        If String.IsNullOrWhiteSpace(txtCodigo.Text) Or String.IsNullOrWhiteSpace(txtNombre.Text) Then
+            ' CAMBIO: Usar Swal.fire() para validación
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "val", "Swal.fire('Validación','Código y Nombre son obligatorios','warning');", True)
+            Return
+        End If
 
-            ' ✅ CORREGIDO: Solo asignar si NO es "0" o vacío
-            If Not String.IsNullOrEmpty(ddlCategoria.SelectedValue) AndAlso ddlCategoria.SelectedValue <> "0" Then
-                categoriaID = Convert.ToInt32(ddlCategoria.SelectedValue)
-            End If
+        Dim h As New Herramienta With {
+        .HerramientaID = CInt(hdnHerramientaID.Value),
+        .Codigo = txtCodigo.Text.Trim(),
+        .Nombre = txtNombre.Text.Trim(),
+        .Descripcion = txtDescripcion.Text.Trim(),
+        .Estado = ddlEstado.SelectedValue,
+        .Disponible = chkDisponible.Checked,
+        .CategoriaID = If(ddlCategoria.SelectedValue = "0", Nothing, CInt(ddlCategoria.SelectedValue)),
+        .Ubicacion = txtUbicacion.Text.Trim()
+    }
 
-            Dim herramienta As New Herramienta() With {
-            .HerramientaID = Convert.ToInt32(hdnHerramientaID.Value),
-            .Codigo = txtCodigo.Text.Trim(),
-            .Nombre = txtNombre.Text.Trim(),
-            .Descripcion = txtDescripcion.Text.Trim(),
-            .Estado = ddlEstado.SelectedValue,
-            .Ubicacion = txtUbicacion.Text.Trim(),
-            .Disponible = chkDisponible.Checked,
-            .CategoriaID = categoriaID ' ✅ AHORA SÍ CON CATEGORÍA
-        }
-
-            Dim herramientaDB As New Herramientadb()
-            Dim resultado As Boolean = False
-
-            If herramienta.HerramientaID = 0 Then
-                resultado = herramientaDB.CrearHerramienta(herramienta)
-            Else
-                resultado = herramientaDB.ActualizarHerramienta(herramienta)
-            End If
-
-            If resultado Then
-                ClientScript.RegisterStartupScript(Me.GetType(), "cerrarModal", "$('#modalHerramienta').modal('hide');", True)
-                CType(Me.Master, Site).MostrarAlerta("¡Éxito!", "Herramienta guardada correctamente", "success")
+        Dim db As New Herramientadb()
+        Try
+            Dim ok = If(h.HerramientaID = 0, db.CrearHerramienta(h), db.ActualizarHerramienta(h))
+            If ok Then
+                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "cerrarOk", "cerrarModal(); Swal.fire('Éxito','Herramienta guardada','success');", True)
                 CargarHerramientas()
             Else
-                CType(Me.Master, Site).MostrarAlerta("Error", "Error al guardar la herramienta", "error")
+                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "err", "Swal.fire('Error','No se pudo guardar','error');", True)
             End If
-        End If
-    End Sub
-
-    Private Function ValidarFormulario() As Boolean
-        If String.IsNullOrEmpty(txtCodigo.Text.Trim()) Then
-            CType(Me.Master, Site).MostrarAlerta("Error", "El código es obligatorio", "error")
-            Return False
-        End If
-
-        If String.IsNullOrEmpty(txtNombre.Text.Trim()) Then
-            CType(Me.Master, Site).MostrarAlerta("Error", "El nombre es obligatorio", "error")
-            Return False
-        End If
-
-        Return True
-    End Function
-
-    ' Cambio de color del badge según estado y disponibilidad
-    Protected Sub gvHerramientas_RowDataBound(sender As Object, e As GridViewRowEventArgs)
-        If e.Row.RowType = DataControlRowType.DataRow Then
-            Dim lblEstado As Label = CType(e.Row.FindControl("lblEstado"), Label)
-            Dim disponible As Boolean = Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "Disponible"))
-
-            If lblEstado IsNot Nothing Then
-                ' Combinar estado y disponibilidad en un solo badge
-                Dim estadoTexto As String = lblEstado.Text
-                Dim cssClass As String = ""
-
-                Select Case estadoTexto.ToLower()
-                    Case "disponible"
-                        If disponible Then
-                            cssClass = "badge bg-success"
-                            lblEstado.Text = "Disponible"
-                        Else
-                            cssClass = "badge bg-warning"
-                            lblEstado.Text = "En Préstamo"
-                        End If
-                    Case "en mantenimiento"
-                        cssClass = "badge bg-warning"
-                        lblEstado.Text = "En Mantenimiento"
-                    Case "dañada"
-                        cssClass = "badge bg-danger"
-                        lblEstado.Text = "Dañada"
-                    Case "retirada"
-                        cssClass = "badge bg-secondary"
-                        lblEstado.Text = "Retirada"
-                    Case Else
-                        cssClass = "badge bg-secondary"
-                End Select
-
-                lblEstado.CssClass = cssClass
-            End If
-        End If
+        Catch ex As Exception
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "err", "Swal.fire('Error','Error al guardar: " & ex.Message.Replace("'", "\'") & "','error');", True)
+        End Try
     End Sub
 
     Private Sub LimpiarFormulario()
         txtCodigo.Text = ""
         txtNombre.Text = ""
-        txtDescripcion.Text = ""
         txtUbicacion.Text = ""
-        ddlEstado.SelectedValue = "Disponible"
+        txtDescripcion.Text = ""
+        ddlEstado.SelectedIndex = 0
         chkDisponible.Checked = True
         ddlCategoria.SelectedValue = "0"
-
     End Sub
 End Class

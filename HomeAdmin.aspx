@@ -77,7 +77,7 @@
                         </div>
                         <h5 class="card-title">Reportes y Estadísticas</h5>
                         <p class="card-text text-muted">Ver reportes del sistema</p>
-                        <a href="Reportes.aspx" class="btn btn-warning mt-2 text-white">
+                        <a href="ReportesEstadisticas.aspx" class="btn btn-warning mt-2 text-white">
                             <i class="fas fa-arrow-right me-2"></i>Ver Reportes
                         </a>
                     </div>
@@ -93,7 +93,7 @@
                         </div>
                         <h5 class="card-title">Todos los Préstamos</h5>
                         <p class="card-text text-muted">Ver histórico de préstamos</p>
-                        <a href="TodosPrestamos.aspx" class="btn btn-secondary mt-2">
+                        <a href="HistoricoPrestamos.aspx" class="btn btn-secondary mt-2">
                             <i class="fas fa-arrow-right me-2"></i>Ver Préstamos
                         </a>
                     </div>

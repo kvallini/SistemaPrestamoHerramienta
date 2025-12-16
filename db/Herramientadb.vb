@@ -204,4 +204,10 @@ Public Class Herramientadb
         Return EliminarHerramienta(id)
     End Function
 
+    ' Estadísticas de herramientas por estado
+    Public Function GetEstadisticasHerramientas() As DataTable
+        Dim sql As String = "SELECT Estado, COUNT(*) AS Cantidad FROM Herramientas GROUP BY Estado"
+        Return DbHelper.ExecuteQuery(sql)  ' Corregido: usa DbHelper directamente
+    End Function
+
 End Class

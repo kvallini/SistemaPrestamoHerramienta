@@ -46,7 +46,15 @@ Public Class Site
     'SweetAlert en todo el proyecto
     Public Sub MostrarAlerta(titulo As String, mensaje As String, tipo As String)
         Dim script As String = $"showAlert('{titulo}', '{mensaje}', '{tipo}');"
-        ScriptManager.RegisterStartupScript(Me, Me.GetType(), "SwalMensajeGlobal", script, True)
+
+        ScriptManager.RegisterStartupScript(
+            Me,
+            Me.GetType(),
+            Guid.NewGuid().ToString(),
+            script,
+            True
+        )
     End Sub
+
 
 End Class

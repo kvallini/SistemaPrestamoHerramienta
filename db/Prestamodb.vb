@@ -99,4 +99,37 @@ Public Class Prestamodb
         End Try
     End Function
 
+    'Obtener Prestamos
+    Public Function GetAll() As DataTable
+        Try
+            Dim sql As String = "SELECT p.PrestamoID, p.UsuarioID, h.Nombre AS NombreHerramienta, u.Nombre AS NombreUsuario, p.FechaPrestamo, p.FechaDevolucionPrevista, p.FechaDevolucionReal, p.Estado FROM Prestamos p INNER JOIN Herramientas h ON p.HerramientaID = h.HerramientaID INNER JOIN Usuarios u ON p.UsuarioID = u.UsuarioID ORDER BY p.FechaPrestamo DESC"
+            Return DbHelper.ExecuteQuery(sql, Nothing)
+        Catch ex As Exception
+            Return New DataTable()
+        End Try
+    End Function
+
+    ' Actualizar préstamo
+    Public Function Update(prestamoID As Integer, fechaDevolucion As DateTime, estado As String, observaciones As String) As Boolean
+        Try
+            Dim sql As String = "UPDATE Prestamos SET FechaDevolucionReal = @Fecha, Estado = @Estado, Observaciones = @Obs WHERE PrestamoID = @ID"
+            Dim parametros As New List(Of SqlParameter) From {
+                New SqlParameter("@Fecha", fechaDevolucion),
+                New SqlParameter("@Estado", estado),
+                New SqlParameter("@Obs", observaciones),
+                New SqlParameter("@ID", prestamoID)
+            }
+            DbHelper.ExecuteNonQuery(sql, parametros)
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
+
+    ' Estadísticas de préstamos por mes
+    Public Function GetEstadisticasPrestamosPorMes() As DataTable
+        Dim sql As String = "SELECT FORMAT(FechaPrestamo, 'yyyy-MM') AS Mes, COUNT(*) AS Cantidad FROM Prestamos WHERE FechaPrestamo >= DATEADD(MONTH, -12, GETDATE()) GROUP BY FORMAT(FechaPrestamo, 'yyyy-MM') ORDER BY Mes DESC"
+        Return DbHelper.ExecuteQuery(sql, Nothing)
+    End Function
+
 End Class

@@ -11,34 +11,34 @@ Option Strict On
 Option Explicit On
 
 
-Partial Public Class GestionHerramientas
+Partial Public Class GestionUsuarios
 
     '''<summary>
-    '''Control updHerramientas.
+    '''Control updUsuarios.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents updHerramientas As Global.System.Web.UI.UpdatePanel
+    Protected WithEvents updUsuarios As Global.System.Web.UI.UpdatePanel
 
     '''<summary>
-    '''Control btnNuevaHerramienta.
+    '''Control btnNuevoUsuario.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents btnNuevaHerramienta As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnNuevoUsuario As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
-    '''Control gvHerramientas.
+    '''Control gvUsuarios.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents gvHerramientas As Global.System.Web.UI.WebControls.GridView
+    Protected WithEvents gvUsuarios As Global.System.Web.UI.WebControls.GridView
 
     '''<summary>
     '''Control litModalTitulo.
@@ -50,31 +50,13 @@ Partial Public Class GestionHerramientas
     Protected WithEvents litModalTitulo As Global.System.Web.UI.WebControls.Literal
 
     '''<summary>
-    '''Control hdnHerramientaID.
+    '''Control hdnUsuarioID.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents hdnHerramientaID As Global.System.Web.UI.WebControls.HiddenField
-
-    '''<summary>
-    '''Control txtCodigo.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents txtCodigo As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''Control rfvCodigo.
-    '''</summary>
-    '''<remarks>
-    '''Campo generado automáticamente.
-    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-    '''</remarks>
-    Protected WithEvents rfvCodigo As Global.System.Web.UI.WebControls.RequiredFieldValidator
+    Protected WithEvents hdnUsuarioID As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
     '''Control txtNombre.
@@ -95,49 +77,58 @@ Partial Public Class GestionHerramientas
     Protected WithEvents rfvNombre As Global.System.Web.UI.WebControls.RequiredFieldValidator
 
     '''<summary>
-    '''Control ddlCategoria.
+    '''Control txtEmail.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents ddlCategoria As Global.System.Web.UI.WebControls.DropDownList
+    Protected WithEvents txtEmail As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control ddlEstado.
+    '''Control rfvEmail.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents ddlEstado As Global.System.Web.UI.WebControls.DropDownList
+    Protected WithEvents rfvEmail As Global.System.Web.UI.WebControls.RequiredFieldValidator
 
     '''<summary>
-    '''Control txtUbicacion.
+    '''Control txtDepartamento.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents txtUbicacion As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents txtDepartamento As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control txtDescripcion.
+    '''Control ddlRol.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents txtDescripcion As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents ddlRol As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
-    '''Control chkDisponible.
+    '''Control txtContrasena.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents chkDisponible As Global.System.Web.UI.WebControls.CheckBox
+    Protected WithEvents txtContrasena As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control chkActivo.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents chkActivo As Global.System.Web.UI.WebControls.CheckBox
 
     '''<summary>
     '''Control btnGuardar.

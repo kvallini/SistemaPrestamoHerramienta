@@ -1,56 +1,58 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false"
-    CodeBehind="GestionHerramientas.aspx.vb"
-    Inherits="SistemaPrestamoHerramienta.GestionHerramientas"
+    CodeBehind="GestionUsuarios.aspx.vb"
+    Inherits="SistemaPrestamoHerramienta.GestionUsuarios"
     MasterPageFile="~/Site.Master"
-    Title="Gestión de Herramientas" %>
+    Title="Gestión de Usuarios" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-    <asp:UpdatePanel ID="updHerramientas" runat="server">
+    <asp:UpdatePanel ID="updUsuarios" runat="server">
         <ContentTemplate>
             <div class="container-fluid">
                 <div class="row mb-4">
                     <div class="col-12 d-flex justify-content-between">
                         <div>
-                            <h2>Gestión de Herramientas</h2>
-                            <p class="text-muted">Administrar inventario</p>
+                            <h2>Gestión de Usuarios</h2>
+                            <p class="text-muted">Administrar usuarios del sistema</p>
                         </div>
-                        <asp:Button ID="btnNuevaHerramienta"
+                        <asp:Button ID="btnNuevoUsuario"
                                     runat="server"
-                                    Text="Nueva Herramienta"
+                                    Text="Nuevo Usuario"
                                     CssClass="btn btn-primary"
-                                    OnClick="btnNuevaHerramienta_Click" />
+                                    OnClick="btnNuevoUsuario_Click"
+                                    Visible='<%# Session("RolUsuario") IsNot Nothing AndAlso Session("RolUsuario").ToString().ToLower().Contains("admin") %>' />
                     </div>
                 </div>
 
-                <asp:GridView ID="gvHerramientas"
+                <asp:GridView ID="gvUsuarios"
                               runat="server"
                               AutoGenerateColumns="False"
                               CssClass="table table-bordered table-striped"
-                              DataKeyNames="HerramientaID"
-                              EmptyDataText="No hay herramientas"
-                              OnRowCommand="gvHerramientas_RowCommand">
+                              DataKeyNames="UsuarioID"
+                              EmptyDataText="No hay usuarios"
+                              OnRowCommand="gvUsuarios_RowCommand">
                     <Columns>
-                        <asp:BoundField DataField="Codigo" HeaderText="Código" />
                         <asp:BoundField DataField="Nombre" HeaderText="Nombre" />
-                        <asp:BoundField DataField="NombreCategoria" HeaderText="Categoría" />
-                        <asp:TemplateField HeaderText="Estado">
+                        <asp:BoundField DataField="Email" HeaderText="Email" />
+                        <asp:BoundField DataField="Departamento" HeaderText="Departamento" />
+                        <asp:BoundField DataField="Rol" HeaderText="Rol" />
+                        <asp:TemplateField HeaderText="Activo">
                             <ItemTemplate>
-                                <asp:Label ID="lblEstado" runat="server" Text='<%# Eval("Estado") %>' />
+                                <asp:Label ID="lblActivo" runat="server" Text='<%# If(Eval("Activo"), "Sí", "No") %>' />
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:BoundField DataField="Ubicacion" HeaderText="Ubicación" />
                         <asp:TemplateField HeaderText="Acciones">
                             <ItemTemplate>
                                 <asp:Button runat="server"
                                             Text="Editar"
                                             CssClass="btn btn-warning btn-sm me-1"
                                             CommandName="Editar"
-                                            CommandArgument='<%# Eval("HerramientaID") %>' />
+                                            CommandArgument='<%# Eval("UsuarioID") %>'
+                                            Visible='<%# Session("RolUsuario") IsNot Nothing AndAlso Session("RolUsuario").ToString().ToLower().Contains("admin") %>' />
                                 <asp:Button runat="server"
                                             Text="Eliminar"
                                             CssClass="btn btn-danger btn-sm"
                                             CommandName="Eliminar"
-                                            CommandArgument='<%# Eval("HerramientaID") %>'
+                                            CommandArgument='<%# Eval("UsuarioID") %>'
                                             Visible='<%# Session("RolUsuario") IsNot Nothing AndAlso Session("RolUsuario").ToString().ToLower().Contains("admin") %>' />
                             </ItemTemplate>
                         </asp:TemplateField>
@@ -59,7 +61,7 @@
             </div>
 
             <!-- MODAL -->
-            <div class="modal fade" id="modalHerramienta" tabindex="-1">
+            <div class="modal fade" id="modalUsuario" tabindex="-1">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -68,41 +70,34 @@
                             </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
-
-    <div class="modal-body">
-    <asp:HiddenField ID="hdnHerramientaID" runat="server" Value="0" />
-    <asp:TextBox ID="txtCodigo" runat="server" CssClass="form-control mb-2" placeholder="Código" />
-    <asp:RequiredFieldValidator ID="rfvCodigo" runat="server" ControlToValidate="txtCodigo" ErrorMessage="Código es obligatorio" CssClass="text-danger" Display="Dynamic" />
-    
-    <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control mb-2" placeholder="Nombre" />
-    <asp:RequiredFieldValidator ID="rfvNombre" runat="server" ControlToValidate="txtNombre" ErrorMessage="Nombre es obligatorio" CssClass="text-danger" Display="Dynamic" />
-    
-    <asp:DropDownList ID="ddlCategoria" runat="server" CssClass="form-control mb-2" />
-    <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-control mb-2">
-        <asp:ListItem Text="Disponible" />
-        <asp:ListItem Text="En Mantenimiento" />
-        <asp:ListItem Text="Dañada" />
-        <asp:ListItem Text="Retirada" />
-    </asp:DropDownList>
-    <asp:TextBox ID="txtUbicacion" runat="server" CssClass="form-control mb-2" placeholder="Ubicación" />
-    <asp:TextBox ID="txtDescripcion" runat="server" TextMode="MultiLine" Rows="3" CssClass="form-control mb-2" />
-    <asp:CheckBox ID="chkDisponible" runat="server" Text="Disponible" Checked="true" />
-</div>
+                        <div class="modal-body">
+                            <asp:HiddenField ID="hdnUsuarioID" runat="server" Value="0" />
+                            <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control mb-2" placeholder="Nombre" />
+                            <asp:RequiredFieldValidator ID="rfvNombre" runat="server" ControlToValidate="txtNombre" ErrorMessage="Nombre es obligatorio" CssClass="text-danger" Display="Dynamic" />
+                            
+                            <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control mb-2" placeholder="Email" />
+                            <asp:RequiredFieldValidator ID="rfvEmail" runat="server" ControlToValidate="txtEmail" ErrorMessage="Email es obligatorio" CssClass="text-danger" Display="Dynamic" />
+                            
+                            <asp:TextBox ID="txtDepartamento" runat="server" CssClass="form-control mb-2" placeholder="Departamento" />
+                            <asp:DropDownList ID="ddlRol" runat="server" CssClass="form-control mb-2" />
+                            <asp:TextBox ID="txtContrasena" runat="server" TextMode="Password" CssClass="form-control mb-2" placeholder="Contraseña (solo para nuevos usuarios)" />
+                            <asp:CheckBox ID="chkActivo" runat="server" Text="Activo" Checked="true" />
+                        </div>
                         <div class="modal-footer">
                             <asp:Button ID="btnGuardar" runat="server" Text="Guardar" CssClass="btn btn-primary" OnClick="btnGuardar_Click" />
                         </div>
                     </div>
                 </div>
             </div>
-
         </ContentTemplate>
     </asp:UpdatePanel>
+
     <script>
         function abrirModal() {
-            new bootstrap.Modal(document.getElementById('modalHerramienta')).show();
+            new bootstrap.Modal(document.getElementById('modalUsuario')).show();
         }
         function cerrarModal() {
-            var modalElement = document.getElementById('modalHerramienta');
+            var modalElement = document.getElementById('modalUsuario');
             var modal = bootstrap.Modal.getInstance(modalElement);
             if (modal) {
                 modal.hide();
@@ -121,8 +116,7 @@
             }, 200);
         }
 
-        // Función para confirmar eliminación en herramientas
-        function confirmarEliminarHerramienta(button) {
+        function confirmarEliminarUsuario(button) {
             Swal.fire({
                 title: '¿Estás seguro?',
                 text: 'Esta acción no se puede deshacer',
@@ -139,7 +133,6 @@
             });
         }
 
-        // Función para agregar listeners 
         function agregarListenersEliminar() {
             var eliminarButtons = document.querySelectorAll('input[type="submit"][value="Eliminar"]');
             eliminarButtons.forEach(function (button) {
@@ -150,18 +143,15 @@
 
         function handleEliminarClick(e) {
             e.preventDefault();
-            confirmarEliminarHerramienta(this);
+            confirmarEliminarUsuario(this);
         }
 
-        // Ejecuta al cargar la página
         document.addEventListener('DOMContentLoaded', function () {
             agregarListenersEliminar();
         });
 
-        // Re-ejecuta después de cada UpdatePanel refresh
         Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
             agregarListenersEliminar();
         });
-            </script>
+    </script>
 </asp:Content>
-

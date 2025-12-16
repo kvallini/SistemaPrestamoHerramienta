@@ -11,77 +11,86 @@ Option Strict On
 Option Explicit On
 
 
-Partial Public Class GestionCategorias
+Partial Public Class HistoricoPrestamos
 
     '''<summary>
-    '''Control updCategorias.
+    '''Control updPrestamos.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents updCategorias As Global.System.Web.UI.UpdatePanel
+    Protected WithEvents updPrestamos As Global.System.Web.UI.UpdatePanel
 
     '''<summary>
-    '''Control btnNuevaCategoria.
+    '''Control ddlFiltroUsuario.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents btnNuevaCategoria As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents ddlFiltroUsuario As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
-    '''Control gvCategorias.
+    '''Control txtFiltroFecha.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents gvCategorias As Global.System.Web.UI.WebControls.GridView
+    Protected WithEvents txtFiltroFecha As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''Control litModalTitulo.
+    '''Control ddlFiltroEstado.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents litModalTitulo As Global.System.Web.UI.WebControls.Literal
+    Protected WithEvents ddlFiltroEstado As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
-    '''Control hdnCategoriaID.
+    '''Control btnLimpiarFiltros.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents hdnCategoriaID As Global.System.Web.UI.WebControls.HiddenField
+    Protected WithEvents btnLimpiarFiltros As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
-    '''Control txtNombre.
+    '''Control gvPrestamos.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents txtNombre As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents gvPrestamos As Global.System.Web.UI.WebControls.GridView
 
     '''<summary>
-    '''Control txtDescripcion.
+    '''Control hdnPrestamoID.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents txtDescripcion As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents hdnPrestamoID As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
-    '''Control btnGuardar.
+    '''Control txtObservacionesDevolucion.
     '''</summary>
     '''<remarks>
     '''Campo generado automáticamente.
     '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
     '''</remarks>
-    Protected WithEvents btnGuardar As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents txtObservacionesDevolucion As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''Control btnConfirmarDevolucion.
+    '''</summary>
+    '''<remarks>
+    '''Campo generado automáticamente.
+    '''Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+    '''</remarks>
+    Protected WithEvents btnConfirmarDevolucion As Global.System.Web.UI.WebControls.Button
 End Class
